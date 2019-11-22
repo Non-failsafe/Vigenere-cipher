@@ -1,71 +1,72 @@
-public class cipher {
+class cipher {
 
-    public static final String AlphaList = "abcdefghijklmnopqrstuvwxyz";
-    char[][] enChart, deChart;
+    private static final String AlphaList = "abcdefghijklmnopqrstuvwxyz";
 
-    cipher() {
-        enChart = new char[26][26];
-        deChart = new char[26][26];
-        for (int i = 0; i < 26; i++) {
-            for (int j = 0; j < 26; j++) {
-                enChart[i][j] = AlphaList.charAt((i + j) % 26);
-                deChart[i][j] = AlphaList.charAt((i - j + 26) % 26);
-            }
+    private int positiveMod(int a, int b) {
+        while (a < 0) {
+            a += b;
         }
+        return a + b;
     }
 
-    public String[] encode(String[] rawLine, String key) {
+    String[] encode(String[] rawLine, String validKey) {
         String[] result = new String[rawLine.length];
         for (int i = 0; i < rawLine.length; i++) {
-            String build = "";
+            StringBuilder build = new StringBuilder();
             for (int j = 0; j < rawLine[i].length(); j++) {
-                char current;
-                if (key.length() > 1) {
-                    current = Character.toLowerCase(key.charAt(j % key.length()));
+                char currentKey;
+                if (validKey.length() > 1) {
+                    currentKey = Character.toLowerCase(validKey.charAt(j % validKey.length()));
                 } else {
-                    current = Character.toLowerCase(key.charAt(0));
+                    currentKey = Character.toLowerCase(validKey.charAt(0));
                 }
-                try {
+
+                char currentChar = Character.toLowerCase(rawLine[i].charAt(j));
+
+                if (AlphaList.contains(String.valueOf(currentChar))) {
+                    char resultChar = AlphaList.charAt((AlphaList.indexOf(currentChar) + AlphaList.indexOf(currentKey)) % 26);
+
                     if (Character.isUpperCase(rawLine[i].charAt(j))) {
-                        char c = enChart[AlphaList.indexOf(Character.toLowerCase(rawLine[i].charAt(j)))][AlphaList.indexOf(current)];
-                        build += (Character.toUpperCase(c));
+                        build.append(Character.toUpperCase(resultChar));
                     } else {
-                        char c = enChart[AlphaList.indexOf(rawLine[i].charAt(j))][AlphaList.indexOf(current)];
-                        build += (c);
+                        build.append(resultChar);
                     }
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    build += (rawLine[i].charAt(j));
+                } else {
+                    build.append(rawLine[i].charAt(j));
                 }
             }
-            result[i] = build;
+            result[i] = build.toString();
         }
         return result;
     }
 
-    public String[] decode(String[] rawLine, String key) {
+    String[] decode(String[] rawLine, String validKey) {
         String[] result = new String[rawLine.length];
         for (int i = 0; i < rawLine.length; i++) {
-            String build = "";
+            StringBuilder build = new StringBuilder();
             for (int j = 0; j < rawLine[i].length(); j++) {
-                char current;
-                if (key.length() > 1) {
-                    current = Character.toLowerCase(key.charAt(j % key.length()));
+                char currentKey;
+                if (validKey.length() > 1) {
+                    currentKey = Character.toLowerCase(validKey.charAt(j % validKey.length()));
                 } else {
-                    current = Character.toLowerCase(key.charAt(0));
+                    currentKey = Character.toLowerCase(validKey.charAt(0));
                 }
-                try {
+
+                char currentChar = Character.toLowerCase(rawLine[i].charAt(j));
+
+                if (AlphaList.contains(String.valueOf(currentChar))) {
+                    char resultChar = AlphaList.charAt(positiveMod(AlphaList.indexOf(currentChar) - AlphaList.indexOf(currentKey), 26));
+
                     if (Character.isUpperCase(rawLine[i].charAt(j))) {
-                        char c = deChart[AlphaList.indexOf(Character.toLowerCase(rawLine[i].charAt(j)))][AlphaList.indexOf(current)];
-                        build += (Character.toUpperCase(c));
+                        build.append(Character.toUpperCase(resultChar));
                     } else {
-                        char c = deChart[AlphaList.indexOf(rawLine[i].charAt(j))][AlphaList.indexOf(current)];
-                        build += (c);
+                        build.append(resultChar);
                     }
-                } catch (ArrayIndexOutOfBoundsException e) {
-                    build += (rawLine[i].charAt(j));
+                } else {
+                    build.append(rawLine[i].charAt(j));
                 }
             }
-            result[i] = build;
+            result[i] = build.toString();
         }
         return result;
     }

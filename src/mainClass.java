@@ -1,18 +1,17 @@
 import java.io.IOException;
-import java.nio.file.Paths;
 
 public class mainClass {
     public static void main(String[] args) {
-        GUI ui = new GUI();
-        ui.UI();
+        GUIManager gui = new GUIManager();
+        gui.startUI();
     }
 
-    void execute(boolean isEncode, boolean isOverride, String fromPath, String toPath, String key) throws IOException {
+    void runAlgorithm(boolean encode, boolean override, String fromPath, String toPath, String key) throws IOException {
         ReadWrite rw = new ReadWrite();
         cipher cipher = new cipher();
-        GUI ui = new GUI();
-        if (isEncode) {
-            if (isOverride) {
+
+        if (encode) {
+            if (override) {
                 String[] read = rw.read(fromPath);
                 String[] ciphered = cipher.encode(read, key);
                 for (String s : ciphered) {
@@ -28,7 +27,7 @@ public class mainClass {
                 rw.write(toPath, ciphered);
             }
         } else {
-            if (isOverride) {
+            if (override) {
                 String[] read = rw.read(fromPath);
                 String[] deciphered = cipher.decode(read, key);
                 for (String s : deciphered) {
