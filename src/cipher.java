@@ -6,7 +6,7 @@ class cipher {
         while (a < 0) {
             a += b;
         }
-        return a + b;
+        return a % b;
     }
 
     String[] encode(String[] rawLine, String validKey) {
