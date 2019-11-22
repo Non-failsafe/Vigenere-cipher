@@ -12,18 +12,18 @@ public class ReadWrite {
         FileReader reader = new FileReader(file);
         BufferedReader bufferedReader = new BufferedReader(reader);
 
-        System.out.print("\nRead:\n");
         String s;
         while ((s = bufferedReader.readLine()) != null) {
             List.add(s);
-            System.out.println(s);
         }
+
+        bufferedReader.close();
+        reader.close();
 
         return List.toArray(new String[0]);
     }
 
     public void write(String path, String[] data) throws IOException {
-        System.out.print("\nWrite:\n");
         File oldFile = new File(path);
         if (!oldFile.exists()) {
             Files.createFile(Paths.get(path));
@@ -31,12 +31,13 @@ public class ReadWrite {
         File file = new File(path);
         FileWriter fileWriter = new FileWriter(file);
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-        PrintWriter printWriter = new PrintWriter(bufferedWriter);
-
 
         for (String s : data) {
-            printWriter.println(s);
+            bufferedWriter.write(s);
+            bufferedWriter.newLine();
         }
-        printWriter.close();
+
+        bufferedWriter.close();
+        fileWriter.close();
     }
 }
